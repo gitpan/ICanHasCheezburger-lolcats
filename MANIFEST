@@ -1,0 +1,6 @@
+AUTHORS
+Makefile.PL
+MANIFEST
+README
+t/ICanHasCheezburger-lolcats.t
+lib/ICanHasCheezburger/lolcats.pm

@@ -1,0 +1,130 @@
+[01:12] <silentcoder> Kernel: Warning, IRC conversation level dangerously low
+[01:12] <Myke> BUKKITS!
+[01:12] <UmbralRaptor> .match skippy generate
+[01:12] <sporksbot> I don't know anything about skippy matching generate.
+[01:12] <UmbralRaptor> .match skippy asking
+[01:12] <sporksbot> [skippy] (1/1) * skippy takes note: asking stupid questions and generally being clueless about something creates activity in chat channels...
+[01:13] <Myke> Where's mai bukket?
+[01:13] <silentcoder> mmm
+[01:13] <silentcoder> right
+[01:13] * silentcoder hides Myke's bukkit
+[01:13] <UmbralRaptor> Myke: /dev/null/
+[01:13] <silentcoder> rofl
+[01:13] <UmbralRaptor> (or did you want something other than the bit bucket?)
+[01:13] <silentcoder> UmbralRaptor:++
+[01:14] <mostlyharmless> cat /dev/random >> /dev/null/
+[01:14] <mostlyharmless> that should fill mah buckkit!
+[01:14] <silentcoder> cat | icanhascheezburgr.coom
+[01:15] <silentcoder> hah
+[01:16] <silentcoder> cat /dev/lol ?
+[01:17] <shminux> heh
+[01:16] <silentcoder> cat /dev/lol ?
+[01:17] <shminux> heh
+[01:17] <Myke> /dev/lol!
+[01:17] <Myke> someone needs to make a patch
+[01:18] <Myke> [19:17:52] 0 root@fulgidous:/dev$ file /dev/lol
+[01:18] <Myke> /dev/lol: character special (0/0)
+[01:18] <silentcoder> mmm, I reckon /dev/lol should be randomly symlinked to another device file on any stat call
+[01:19] <silentcoder> so if you cat to or from /dev/lol you can never predict what exactly will happen
+[01:19] <dfranke> Myke: I'd so do that if I had the time.
+[01:19] <silentcoder> you could dump /dev/fb to a file
+[01:19] <silentcoder> or overwrite /dev/sd1
+[01:19] <krikkert> Or send output to /dev/monitor ?
+[01:20] <krikkert> ;p
+[01:20] <silentcoder> funny no ?
+[01:20] <shminux> that's no lol
+[01:20] <Myke> guys
+[01:20] <Myke> c'mon
+[01:20] <silentcoder> shminux: it is if you like to live dangerously
+[01:20] <silentcoder> oh, and default to world writeable
+[01:20] <Myke> $ cat /dev/lol
+[01:20] <Myke> It's a lolcat
+[01:20] <Myke> ...
+[01:20] <silentcoder> I invented it
+[01:20] <silentcoder> I know that
+[01:20] <silentcoder> hah I got it
+[01:21] <Myke> ...
+[01:21] <silentcoder> /dev/lol should on read fetch the latest lol from icanhazcheezburger.com
+[01:21] <silentcoder> and then parse it through aalib
+[01:21] <silentcoder> and output the result
+[01:21] <Myke> !
+[01:21] <Myke> You'd need a daemon or some serious kernel code
+[01:21] <silentcoder> well you'd need a driver
+[01:22] <silentcoder> and your driver would need some low level http stuff
+[01:22] <silentcoder> but it's not THAT hard
+[01:22] <shminux> not necessarily
+[01:22] <silentcoder> simpler than most file systems
+[01:22] <krikkert> FUSE?
+[01:22] <silentcoder> krikkert: mmm that would make it a block device though
+[01:23] <Myke> I don't think so.
+[01:23] <silentcoder> or rather, require it to be
+[01:23] <shminux> you can cron retrieve the last lol and put it in /dev/lol
+[01:23] <silentcoder> and still not quite work
+[01:23] <silentcoder> shminux: well then you're faking it with a simple script in cron.hourly
+[01:23] <silentcoder> will work
+[01:23] <silentcoder> but won't be a device file
+[01:23] <silentcoder> ease-of-implementation wins out if you ask me
+[01:24] <shminux> it's the result that counts
+[01:24] <cmantito> actually the FUSE implementation could work
+[01:24] <silentcoder> wget -o - $LOLURL | aalibconversionproggie
+[01:24] <cmantito> I've been fussing with FUSE quite a bit lately
+[01:24] <silentcoder> cmantito: how do you get FUSE to give you a device file ?
+[01:24] <silentcoder> FUSE is good for mounting something that ISN'T a device
+[01:25] <cmantito> that's not as easy, but it is possible
+[01:25] <silentcoder> and getting filesystems from daemons and stuff,
+[01:25] <silentcoder> what you tell me now is new to me
+[01:25] <cmantito> yeah, I've been using it for tinyurlfs
+[01:25] <silentcoder> advantage of the cron job version of course is
+[01:25] <silentcoder> it will work on ANY unix
+[01:25] <cmantito> well, theoretically is you can fake a device that's mountable with fuse, and when /dev/lol is mounted it would trigger the fuse to mount
+[01:25] <cmantito> the problem is, you'd be mounting /dev/lol, which means it should have contents of some sort
+[01:26] <cmantito> which isn't really waht you're going for.
+[01:26] <silentcoder> nope
+[01:26] <silentcoder> short of a kernel module, or a seriously intense UDEV hack
+[01:26] <silentcoder> (which is again, linux specific)
+[01:26] <cmantito> mm
+[01:26] <silentcoder> I'd say you can't get a real chardev/blockdev to do it
+[01:27] <silentcoder> but a cronjob that saves to /dev/lol will fake it well enough for most purposes
+[01:27] <cmantito> you could make /dev/lol a fifo buffer and have the cronjob feeding it through it..
+[01:27] <shminux> yeah, that was my thought
+[01:27] <shminux> but then there is no point
+[01:27] <silentcoder> that is better yeah
+[01:28] <cmantito> yeah
+[01:28] <cmantito> and you'd only be able to read it once, ideally.
+[01:28] <shminux> why?
+[01:28] <silentcoder> couldn't you make /dev/lol just a named pipe from your script ?
+[01:28] <cmantito> you could
+[01:28] <- mostlyharmless has left this server (Quit: They got some kind of freaky EMP down there! Getting clipped just saved your ass marine!).
+[01:28] <cmantito> why not have lolcats served over a unix socket?
+[01:28] <shminux> well, next task: implement it, make a screenshot, then submit to ICHC
+[01:29] <cmantito> make /dev/lol a UNIX socket, and an ichcd
+[01:29] <Myke> that's what I was thinking
+[01:29] <Myke> and you can even use the RSS feed
+[01:30] <Myke> then you don't need to parse the latest HTML
+[01:30] <cmantito> hell, this would take all of 5 minutes in Perl.
+[01:30] <Myke> get crackin'!
+[01:30] <cmantito> but I'm busy with tinyurlfs!
+[01:30] <cmantito> oh fine, I can take a break.
+[01:31] <silentcoder> in ichc they credit the photographer usually
+[01:31] <silentcoder> ...do I get that credit ?
+[01:31] <cmantito> I think the channel gets the credit ;)
+[01:31] <silentcoder> but I was the first to suggest: cat /dev/lol
+[01:31] <cmantito> but I'm implementing
+[01:31] <silentcoder> let's just call it open source
+[01:32] <Myke> silentcoder gets 10% of all profits
+[01:32] <silentcoder> and stick everyone's names in AUTHORS
+[01:32] <cmantito> sounds good.
+[01:32] <Myke> the rest goes to the community (#SPORKS)
+[01:33] <silentcoder> what caption for the screenshot ? Just a blow-up of the command ? cat /dev/lol
+[01:33] <silentcoder> (and probably include the URL for the program somewhere)
+[01:36] * shminux wonders if the whole brainstorming lolsession gets qdb'd
+[01:36] <Myke> shouldn't.
+[01:36] <Myke> but silentcoder will inevitably 'blog it
+[01:37] * cmantito resumes Perling
+[01:37] <silentcoder> Myke: I could do that
+[01:37] <cmantito> also, I'm implementing this Perl style, which means I'm making a module for ICHC
+[01:37] <shminux> apparently there is something like /usr/lolcat
+[01:39] <cmantito> don't care, busy with this ;)
+[01:39] <shminux> will be the top download from CPAN? :)
+
+(Source: http://silentcoder.co.za/silentcoder/?p=317)
